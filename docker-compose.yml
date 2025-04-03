@@ -1,0 +1,131 @@
+# Inspired by https://github.com/Wonderfall/dockerfiles/tree/master/nextcloud#docker-compose-file
+services:
+  nextcloud:
+    image: ${NEXTCLOUD_IMAGE}:${NEXTCLOUD_VERSION}
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+      - traefik.enable=true
+      - traefik.docker.network=system_traefik
+      - traefik.http.routers.${TRAEFIK_PROJECT}-${TRAEFIK_SERVICE_01}-${TRAEFIK_HASH}.entrypoints=websecure
+      - traefik.http.routers.${TRAEFIK_PROJECT}-${TRAEFIK_SERVICE_01}-${TRAEFIK_HASH}.tls=true
+      - traefik.http.routers.${TRAEFIK_PROJECT}-${TRAEFIK_SERVICE_01}-${TRAEFIK_HASH}.tls.certresolver=default
+      - traefik.http.routers.${TRAEFIK_PROJECT}-${TRAEFIK_SERVICE_01}-${TRAEFIK_HASH}.middlewares=default-security-headers@file
+      - traefik.http.services.${TRAEFIK_PROJECT}-${TRAEFIK_SERVICE_01}-${TRAEFIK_HASH}.loadbalancer.server.port=8888
+    links:
+      - nextcloud-db:nextcloud-db   # If using MySQL
+      - nextcloud-redis:nextcloud-redis # If using Redis
+    environment:
+      - UID=1000
+      - GID=1000
+      - UPLOAD_MAX_SIZE=10G
+      - APC_SHM_SIZE=128M
+      - OPCACHE_MEM_SIZE=128
+      - CRON_PERIOD=15m
+      - TZ=Europe/Berlin
+      - ADMIN_USER=admin            # Don't set to configure through browser
+      - ADMIN_PASSWORD=admin        # Don't set to configure through browser
+      - DB_TYPE=mysql
+      - DB_NAME=nextcloud
+      - DB_USER=nextcloud
+      - DB_PASSWORD=${MYSQL_PASSWORD}
+      - DB_HOST=nextcloud-db
+    depends_on:
+      - nextcloud-db
+      - nextcloud-redis
+    networks:
+      - default
+      - system_traefik
+    restart: unless-stopped
+    volumes:
+      - ./data:/data
+      - ./config:/nextcloud/config
+      - ./apps:/nextcloud/apps2
+      - ./logs/php:/php/logs
+      - ./logs/nginx:/nginx/logs
+      - ./themes:/nextcloud/themes
+      - ./php-sessions:/php/session
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+
+  nextcloud-db:
+    image: mariadb:10.11
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MARIADB_AUTO_UPGRADE=1
+      - MARIADB_DISABLE_UPGRADE_BACKUP=1
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "healthcheck.sh", "--su-mysql", "--connect" ]
+      start_period: 1m
+      #start_interval: 10s
+      interval: 1m
+      timeout: 5s
+      retries: 3
+    volumes:
+      - ./mysql:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+
+  nextcloud-redis:
+    image: redis:7-alpine
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+    restart: unless-stopped
+    volumes:
+      - ./redis:/data
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+
+  nextcloud-db-backup:
+    image: fradelg/mysql-cron-backup
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+    links:
+      - nextcloud-db:nextcloud-db
+    environment:
+      - MYSQL_HOST=nextcloud-db
+      - MYSQL_USER=root
+      - MYSQL_PASS=${MYSQL_ROOT_PASSWORD}
+      - MAX_BACKUPS=20
+      - CRON_TIME=0 0 * * *
+    depends_on:
+      - nextcloud-db
+    restart: unless-stopped
+    volumes:
+      - ./mysql-backups:/backup
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+
+  nextcloud-nc-backup:
+    image: waja/calcardbackup
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+    links:
+      - nextcloud-db:nextcloud-db
+      - nextcloud:nextcloud
+    environment:
+      - CRON_TIME=0 0 * * *
+      - INIT_BACKUP=yes
+      - CALCARD_OPTS=-i -r 20
+      - NC_DIR=/nextcloud
+      - NC_HOST=nextcloud
+      - NC_PORT=8888
+      - DB_HOST=nextcloud-db
+    depends_on:
+      - nextcloud-db
+      - nextcloud
+    restart: unless-stopped
+    volumes:
+      - ./calcardbackup:/backup
+      - ./config:/nextcloud/config
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+
+networks:
+  system_traefik:
+    external: true
