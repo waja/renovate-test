@@ -4,8 +4,8 @@
     {
       "matchDatasources": [ "docker" ],
       "matchPackageNames": [ "madiadb" ],
-      "matchUpdateTypes": ["minor", "patch", "digest"],
-      "enabled": true
+      "matchUpdateTypes": ["major"],
+      "enabled": false
     }
   ],
   "extends": [
