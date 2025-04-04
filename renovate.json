@@ -12,7 +12,7 @@
     },
     {
       "matchPackageNames": [ "madiadb" ],
-      "allowedVersions": "^10."
+      "allowedVersions": "<11"
     },
     {
       "dependencyDashboardApproval": true,
