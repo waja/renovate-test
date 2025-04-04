@@ -7,7 +7,7 @@
   "packageRules": [
     {
       "enabled": false,
-      "matchPackageNames": [ "madiadb" ]
+      "matchUpdateTypes": [ "major" ]
     },
     {
       "matchPackageNames": [ "madiadb" ],
