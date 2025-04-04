@@ -8,7 +8,6 @@
     {
       "enabled": false,
       "matchDatasources": [ "docker" ],
-      "matchPackageNames": [ "madiadb" ],
       "matchUpdateTypes": [ "major" ]
     },
     {
