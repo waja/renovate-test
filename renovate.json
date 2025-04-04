@@ -11,6 +11,10 @@
       "matchPackageNames": [ "madiadb" ]
     },
     {
+      "matchPackageNames": [ "madiadb" ],
+      "allowedVersions": "^10."
+    },
+    {
       "dependencyDashboardApproval": true,
       "matchUpdateTypes": [ "major" ]
     }
