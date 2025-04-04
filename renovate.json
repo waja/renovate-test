@@ -3,8 +3,15 @@
   "packageRules": [
     {
       "matchDatasources": [ "docker" ],
+      "matchUpdateTypes": [ "major" ],
+      "enabled": false
+    }
+  ],
+  "packageRules": [
+    {
       "matchPackageNames": [ "madiadb" ],
-      "matchUpdateTypes": ["major"],
+      "matchDatasources": [ "docker" ],
+      "matchUpdateTypes": [ "major" ],
       "enabled": false
     }
   ],
