@@ -6,10 +6,6 @@
   ],
   "packageRules": [
     {
-      "enabled": false,
-      "matchUpdateTypes": [ "major" ]
-    },
-    {
       "matchPackageNames": [ "madiadb" ],
       "allowedVersions": "< 11.0.0"
     },
