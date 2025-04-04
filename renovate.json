@@ -12,6 +12,7 @@
     },
     {
       "dependencyDashboardApproval": true,
+      "matchPackageNames": [ "madiadb" ],
       "matchUpdateTypes": [ "major" ]
     }
   ]
