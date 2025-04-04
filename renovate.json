@@ -7,7 +7,6 @@
   "packageRules": [
     {
       "enabled": false,
-      "matchDatasources": [ "docker" ],
       "matchPackageNames": [ "madiadb" ]
     },
     {
