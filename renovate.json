@@ -6,16 +6,16 @@
   ],
   "packageRules": [
     {
-      "matchPackageNames": [ "madiadb" ],
-      "matchUpdateTypes": [ "major" ],
-      "enabled": false
+      "enabled": false,
+      "matchDatasources": [ "docker" ],
+      "matchUpdateTypes": [ "major" ]
     }
   ],
   "packageRules": [
     {
+      "dependencyDashboardApproval": true,
       "matchPackageNames": [ "madiadb" ],
-      "matchUpdateTypes": [ "major" ],
-      "dependencyDashboardApproval": true
+      "matchUpdateTypes": [ "major" ]
     }
   ]
 }
