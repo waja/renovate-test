@@ -8,11 +8,11 @@
     {
       "enabled": true,
       "matchDatasources": [ "docker" ],
+      "matchPackageNames": [ "madiadb" ],
       "matchUpdateTypes": [ "major" ]
     },
     {
       "dependencyDashboardApproval": true,
-      "matchPackageNames": [ "madiadb" ],
       "matchUpdateTypes": [ "major" ]
     }
   ]
