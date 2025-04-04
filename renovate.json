@@ -9,9 +9,7 @@
       "enabled": false,
       "matchDatasources": [ "docker" ],
       "matchUpdateTypes": [ "major" ]
-    }
-  ],
-  "packageRules": [
+    },
     {
       "dependencyDashboardApproval": true,
       "matchPackageNames": [ "madiadb" ],
