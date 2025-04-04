@@ -6,9 +6,16 @@
   ],
   "packageRules": [
     {
-      "enabled": false,
       "matchPackageNames": [ "madiadb" ],
-      "matchUpdateTypes": [ "major" ]
+      "matchUpdateTypes": [ "major" ],
+      "enabled": false
+    }
+  ],
+  "packageRules": [
+    {
+      "matchPackageNames": [ "madiadb" ],
+      "matchUpdateTypes": [ "major" ],
+      "dependencyDashboardApproval": true
     }
   ]
 }
